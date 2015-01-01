@@ -5,7 +5,7 @@ JXIRR - v1.0.0 - 19/10/2005 - Readme File  -
 (C) 2005 Gautam Satpathy
 Released under GNU Lesser General Public License (see jxirr-license.txt)
 gautam@satpathy.in
-www.satpathy.in
+http://satpathy.org/2009/11/07/jxirr/
 
 =======================================================================
 THANKS
@@ -20,7 +20,7 @@ I am not actively working on this at this time. Suggestions, bugs, requests for 
 are welcome. Please write to me at gautam@satpathy.in
 
 Check the web site to stay informed about the updates:
-  http://www.satpathy.in
+  http://satpathy.org/2009/11/07/jxirr/
 
 =======================================================================
 CONTENTS
@@ -28,13 +28,13 @@ CONTENTS
 At the top level you find this file and a text version of the LGPL license. 
 
 This distribution contains several sub-directories.
-They are listed and descibed below:
+They are listed and described below:
 
- src\		contains all the sources to make a distribution.
+ src		contains all the sources to make a distribution.
                
 
 =======================================================================
 
 Gautam Satpathy
 gautam@satpathy.in
-www.satpathy.in
+http://satpathy.org/2009/11/07/jxirr/

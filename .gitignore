@@ -1,4 +1,7 @@
 .classpath
+.idea
 .project
+atlassian-ide-plugin.xml
 bin
+jxirr.iml
 target
