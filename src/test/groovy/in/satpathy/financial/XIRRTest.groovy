@@ -22,10 +22,16 @@ package in.satpathy.financial
 
 import spock.lang.Specification
 
-import static spock.util.matcher.HamcrestMatchers.closeTo
-import static spock.util.matcher.HamcrestSupport.that
-
 class XIRRTest extends Specification {
+    def setupSpec() {
+        Double.metaClass.isCloseTo = {
+            double target, double epsilon -> (delegate - target).abs() < epsilon * (delegate.abs() + target.abs())
+        }
+        Double.metaClass.isCloseTo = {
+            double target -> delegate.isCloseTo(target, Math.sqrt(Double.MIN_VALUE))
+        }
+    }
+
     def "a simple test"() {
         setup:
         double[] values = new double[5];
@@ -46,6 +52,6 @@ class XIRRTest extends Specification {
         double xirrValue = XIRR.xirr(data);
 
         then:
-        that xirrValue, closeTo(1.224837691624522, 1e-6)
+        xirrValue.isCloseTo(1.224837691624522)
     }
 }
