@@ -23,6 +23,7 @@ package in.satpathy.financial
 import spock.lang.Specification
 
 import static java.lang.Math.abs
+import static java.util.Calendar.*
 
 class XIRRTest extends Specification {
     static {
@@ -49,11 +50,11 @@ class XIRRTest extends Specification {
         values[2] = 1422;
         values[3] = 1933;
         values[4] = 1422;
-        dates[0] = new GregorianCalendar(1999, 0, 15);
-        dates[1] = new GregorianCalendar(1999, 3, 4);
-        dates[2] = new GregorianCalendar(1999, 4, 9);
-        dates[3] = new GregorianCalendar(2000, 2, 12);
-        dates[4] = new GregorianCalendar(2000, 4, 1);
+        dates[0] = new GregorianCalendar(1999, JANUARY, 15);
+        dates[1] = new GregorianCalendar(1999, APRIL, 4);
+        dates[2] = new GregorianCalendar(1999, MAY, 9);
+        dates[3] = new GregorianCalendar(2000, MARCH, 12);
+        dates[4] = new GregorianCalendar(2000, MAY, 1);
         XIRRData data = new XIRRData(values, dates);
 
         when:
