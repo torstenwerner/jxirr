@@ -25,6 +25,8 @@ import in.satpathy.math.GoalSeekStatus;
 
 public class XIRRNPV implements GoalSeekFunction {
 
+    public static final double DAYS_OF_YEAR = 365.0;
+
     public XIRRNPV() {
     }
 
@@ -43,7 +45,7 @@ public class XIRRNPV implements GoalSeekFunction {
             if (d < 0) {
                 return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
             }
-            sum += values[i] / Math.pow(rate, d / 365.0); //pow1p( rate, d / 365.0 ) ;
+            sum += values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
         }
 
         return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_OK, sum);

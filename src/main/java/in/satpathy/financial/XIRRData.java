@@ -29,6 +29,7 @@ import java.util.Objects;
  */
 public class XIRRData {
     public static final GregorianCalendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, 11, 30);
+    public static final double DEFAULT_GUESS = 0.3;
 
     public double guess;
     public double[] values;
@@ -46,6 +47,23 @@ public class XIRRData {
         this.guess = guess;
         this.values = values;
         this.dates = dates;
+    }
+
+    public XIRRData(double guess, double[] values, GregorianCalendar calendarDates[]) {
+        this(guess, values, getExcelDateArray(calendarDates));
+    }
+
+    public XIRRData(double[] values, GregorianCalendar calendarDates[]) {
+        this(DEFAULT_GUESS, values, calendarDates);
+    }
+
+    public static double[] getExcelDateArray(GregorianCalendar calendarDates[]) {
+        Objects.requireNonNull(calendarDates);
+        final double[] dates = new double[calendarDates.length];
+        for (int i = 0; i < calendarDates.length; i++) {
+            dates[i] = getExcelDateValue(calendarDates[i]);
+        }
+        return dates;
     }
 
     /**

@@ -34,24 +34,29 @@ class XIRRTest extends Specification {
 
     def "a simple test"() {
         setup:
-        double[] values = new double[5];
-        double[] dates = new double[5];
+        def values = new double[5];
+        def dates = new GregorianCalendar[5];
         values[0] = -6000;
         values[1] = 2134;
         values[2] = 1422;
         values[3] = 1933;
         values[4] = 1422;
-        dates[0] = XIRRData.getExcelDateValue(new GregorianCalendar(1999, 0, 15));
-        dates[1] = XIRRData.getExcelDateValue(new GregorianCalendar(1999, 3, 4));
-        dates[2] = XIRRData.getExcelDateValue(new GregorianCalendar(1999, 4, 9));
-        dates[3] = XIRRData.getExcelDateValue(new GregorianCalendar(2000, 2, 12));
-        dates[4] = XIRRData.getExcelDateValue(new GregorianCalendar(2000, 4, 1));
-        XIRRData data = new XIRRData(0.3, values, dates);
+        dates[0] = new GregorianCalendar(1999, 0, 15);
+        dates[1] = new GregorianCalendar(1999, 3, 4);
+        dates[2] = new GregorianCalendar(1999, 4, 9);
+        dates[3] = new GregorianCalendar(2000, 2, 12);
+        dates[4] = new GregorianCalendar(2000, 4, 1);
+        XIRRData data = new XIRRData(values, dates);
 
         when:
         double xirrValue = XIRR.xirr(data);
 
         then:
         xirrValue.isCloseTo(0.22483769162452205)
+    }
+
+    def "datevalue"() {
+        expect:
+        XIRRData.getExcelDateValue(new GregorianCalendar(2015, 0, 2)) == 42006
     }
 }
