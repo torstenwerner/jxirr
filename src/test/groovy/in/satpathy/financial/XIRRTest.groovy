@@ -22,13 +22,21 @@ package in.satpathy.financial
 
 import spock.lang.Specification
 
+import static java.lang.Math.abs
+
 class XIRRTest extends Specification {
-    def setupSpec() {
+    static {
         Double.metaClass.isCloseTo = {
-            double target, double epsilon -> (delegate - target).abs() < epsilon * (delegate.abs() + Math.abs(target))
-        }
-        Double.metaClass.isCloseTo = {
-            double target -> delegate.isCloseTo(target, Math.sqrt(Double.MIN_VALUE))
+            double target, double epsilon = Math.sqrt(Double.MIN_VALUE) ->
+                if (epsilon <= 0) {
+                    throw new RuntimeException("epsilon must be positive");
+                }
+                double value = (double) delegate
+                def maxDifference = epsilon * (abs(value) + abs(target)) * 0.5;
+                if (maxDifference == 0) {
+                    maxDifference = epsilon;
+                }
+                return abs(value - target) < maxDifference;
         }
     }
 
@@ -58,5 +66,10 @@ class XIRRTest extends Specification {
     def "datevalue"() {
         expect:
         XIRRData.getExcelDateValue(new GregorianCalendar(2015, 0, 2)) == 42006
+    }
+
+    def "very small epsilon"() {
+        expect:
+        Double.MIN_VALUE * 0.5 == 0.0
     }
 }
