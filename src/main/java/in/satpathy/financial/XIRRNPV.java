@@ -20,53 +20,33 @@
  */
 package in.satpathy.financial;
 
-/*
- *  Imports
- */
-import in.satpathy.math.GoalSeekStatus ;
-import in.satpathy.math.GoalSeekFunction ;
+import in.satpathy.math.GoalSeekFunction;
+import in.satpathy.math.GoalSeekStatus;
 
-/**
- * @author : gsatpath
- * @version : 1.0.0 Date: Oct 19, 2005, Time: 9:32:57 AM
- */
 public class XIRRNPV implements GoalSeekFunction {
 
-	/**
-	 *  Default Constructor.
-	 */
-	public XIRRNPV() {
-	}
+    public XIRRNPV() {
+    }
 
-	/**
-	 *
-	 *  @param rate
-	 *  @param y
-	 *  @param userData
-	 *  @return
-	 */
-	public GoalSeekStatus f( double rate, Object userData ) {
-		XIRRData    p ;
-		double[]    values ;
-		double[]    dates ;
-		double      sum ;
-		int         n ;
+    public GoalSeekStatus f(double rate, Object userData) {
+        XIRRData p;
+        double[] values;
+        double[] dates;
+        double sum;
 
-		p       = (XIRRData) userData ;
-		values  = p.values ;
-		dates   = p.dates ;
-		n       = p.n ;
-		sum     = 0 ;
-		for ( int i = 0; i < n; i++ ) {
-			double d = dates[i] - dates[0];
-			if ( d < 0 )  {
-				return new GoalSeekStatus( GoalSeekStatus.GOAL_SEEK_ERROR, null) ;
-			}
-		    sum += values[i] / Math.pow(rate, d / 365.0) ; //pow1p( rate, d / 365.0 ) ;
-		}
+        p = (XIRRData) userData;
+        values = p.values;
+        dates = p.dates;
+        sum = 0;
+        for (int i = 0; i < dates.length; i++) {
+            double d = dates[i] - dates[0];
+            if (d < 0) {
+                return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
+            }
+            sum += values[i] / Math.pow(rate, d / 365.0); //pow1p( rate, d / 365.0 ) ;
+        }
 
-//		GoalSeekStatus.returnData = new Double( sum ) ;
-		return new GoalSeekStatus( GoalSeekStatus.GOAL_SEEK_OK, new Double(sum) ) ;
-	}
+        return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_OK, sum);
+    }
 
-}   /*  End of the XIRRNPV class. */
+}

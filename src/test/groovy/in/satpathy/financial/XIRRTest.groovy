@@ -46,7 +46,7 @@ class XIRRTest extends Specification {
         dates[2] = XIRRData.getExcelDateValue(new GregorianCalendar(1999, 4, 9));
         dates[3] = XIRRData.getExcelDateValue(new GregorianCalendar(2000, 2, 12));
         dates[4] = XIRRData.getExcelDateValue(new GregorianCalendar(2000, 4, 1));
-        XIRRData data = new XIRRData(5, 0.3, values, dates);
+        XIRRData data = new XIRRData(0.3, values, dates);
 
         when:
         double xirrValue = XIRR.xirr(data);
