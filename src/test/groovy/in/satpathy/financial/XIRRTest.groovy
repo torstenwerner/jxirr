@@ -52,7 +52,7 @@ class XIRRTest extends Specification {
         double xirrValue = XIRR.xirr(data);
 
         then:
-        xirrValue.isCloseTo(0.22483769162452205)
+        xirrValue.isCloseTo(0.2248376916245216)
     }
 
     def "datevalue"() {

@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class XIRRData {
     public static final GregorianCalendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, 11, 30);
-    public static final double DEFAULT_GUESS = 0.3;
+    public static final double DEFAULT_GUESS = 0.1;
 
     public double guess;
     public double[] values;
