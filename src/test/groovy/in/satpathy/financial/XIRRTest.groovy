@@ -60,6 +60,38 @@ class XIRRTest extends Specification {
         xirrValue.isCloseTo(0.2248376916245216)
     }
 
+    def "regular year"() {
+        setup:
+        double[] values = [-100, 110]
+        GregorianCalendar[] dates = [
+                new GregorianCalendar(2011, JANUARY, 1),
+                new GregorianCalendar(2012, JANUARY, 1)
+        ]
+        XIRRData data = new XIRRData(values, dates)
+
+        when:
+        double xirrValue = XIRR.xirr(data)
+
+        then:
+        xirrValue.isCloseTo(0.1, 1e-8)
+    }
+
+    def "leap year is not fully correct"() {
+        setup:
+        double[] values = [-100, 110]
+        GregorianCalendar[] dates = [
+                new GregorianCalendar(2012, JANUARY, 1),
+                new GregorianCalendar(2013, JANUARY, 1)
+        ]
+        XIRRData data = new XIRRData(values, dates)
+
+        when:
+        double xirrValue = XIRR.xirr(data)
+
+        then:
+        xirrValue.isCloseTo(0.0997135859, 1e-8)
+    }
+
     def "datevalue"() {
         expect:
         XIRRData.getExcelDateValue(new GregorianCalendar(2015, JANUARY, 2)) == 42006

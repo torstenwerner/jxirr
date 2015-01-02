@@ -157,7 +157,7 @@ public class GoalSeek {
         data.ypos = data.yneg = Double.NaN; //gnm_nan ;
         data.xmin = -1e10;
         data.xmax = +1e10;
-        data.precision = 1e-20;
+        data.precision = 1e-15;
     }
 
     /**
