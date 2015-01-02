@@ -30,35 +30,31 @@ class XIRRTest extends Specification {
         Double.metaClass.isCloseTo = {
             double target, double epsilon = Math.sqrt(Double.MIN_VALUE) ->
                 if (epsilon <= 0) {
-                    throw new RuntimeException("epsilon must be positive");
+                    throw new RuntimeException("epsilon must be positive")
                 }
                 double value = (double) delegate
-                def maxDifference = epsilon * (abs(value) + abs(target)) * 0.5;
+                def maxDifference = epsilon * (abs(value) + abs(target)) * 0.5
                 if (maxDifference == 0) {
-                    maxDifference = epsilon;
+                    maxDifference = epsilon
                 }
-                return abs(value - target) < maxDifference;
+                return abs(value - target) < maxDifference
         }
     }
 
     def "a simple test"() {
         setup:
-        def values = new double[5];
-        def dates = new GregorianCalendar[5];
-        values[0] = -6000;
-        values[1] = 2134;
-        values[2] = 1422;
-        values[3] = 1933;
-        values[4] = 1422;
-        dates[0] = new GregorianCalendar(1999, JANUARY, 15);
-        dates[1] = new GregorianCalendar(1999, APRIL, 4);
-        dates[2] = new GregorianCalendar(1999, MAY, 9);
-        dates[3] = new GregorianCalendar(2000, MARCH, 12);
-        dates[4] = new GregorianCalendar(2000, MAY, 1);
-        XIRRData data = new XIRRData(values, dates);
+        double[] values = [-6000, 2134, 1422, 1933, 1422]
+        GregorianCalendar[] dates = [
+                new GregorianCalendar(1999, JANUARY, 15),
+                new GregorianCalendar(1999, APRIL, 4),
+                new GregorianCalendar(1999, MAY, 9),
+                new GregorianCalendar(2000, MARCH, 12),
+                new GregorianCalendar(2000, MAY, 1)
+        ]
+        XIRRData data = new XIRRData(values, dates)
 
         when:
-        double xirrValue = XIRR.xirr(data);
+        double xirrValue = XIRR.xirr(data)
 
         then:
         xirrValue.isCloseTo(0.2248376916245216)
