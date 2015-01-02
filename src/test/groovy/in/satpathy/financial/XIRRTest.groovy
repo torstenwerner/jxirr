@@ -25,7 +25,7 @@ import spock.lang.Specification
 class XIRRTest extends Specification {
     def setupSpec() {
         Double.metaClass.isCloseTo = {
-            double target, double epsilon -> (delegate - target).abs() < epsilon * (delegate.abs() + target.abs())
+            double target, double epsilon -> (delegate - target).abs() < epsilon * (delegate.abs() + Math.abs(target))
         }
         Double.metaClass.isCloseTo = {
             double target -> delegate.isCloseTo(target, Math.sqrt(Double.MIN_VALUE))
@@ -52,6 +52,6 @@ class XIRRTest extends Specification {
         double xirrValue = XIRR.xirr(data);
 
         then:
-        xirrValue.isCloseTo(1.224837691624522)
+        xirrValue.isCloseTo(0.22483769162452205)
     }
 }

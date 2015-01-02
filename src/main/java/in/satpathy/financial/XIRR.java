@@ -20,62 +20,40 @@
  */
 package in.satpathy.financial;
 
-/*
- *  Imports
- */
-import in.satpathy.math.GoalSeek ;
-import in.satpathy.math.GoalSeekData ;
-import in.satpathy.math.GoalSeekStatus ;
+import in.satpathy.math.GoalSeek;
+import in.satpathy.math.GoalSeekData;
+import in.satpathy.math.GoalSeekStatus;
 
-/**
- *  XIRR implementation
- *
- *  @author : gsatpath
- *  @version : 1.0.0 Date: Oct 19, 2005, Time: 12:09:58 PM
- */
 public class XIRR {
-
-	/*
-	 *  Excel stores dates as sequential serial numbers so they can be used
+    /*
+     *  Excel stores dates as sequential serial numbers so they can be used
 	 *  in calculations. By default, January 1, 1900 is serial number 1, and
 	 *  January 1, 2008 is serial number 39448 because it is 39,448 days
 	 *  after January 1, 1900.
 	 */
 
-	/**
-	 *  Calculate XIRR.
-	 *
-	 *  @param xirrData
-	 *  @return
-	 */
-	public static double xirr( XIRRData xirrData ) 	{
-		GoalSeekData    data ;
-		GoalSeekStatus  status ;
-		double          result ;
-		double          rate0 ;
-		int             n ;
-		int             d_n ;
+    public static double xirr(XIRRData xirrData) {
+        GoalSeekData data;
+        GoalSeekStatus status;
+        double result;
+        double rate0;
 
-		data        = new GoalSeekData() ;
-		GoalSeek.goal_seek_initialize( data ) ;
-		data.xmin   = -1;
-		data.xmax   = Math.min( 1000, data.xmax ) ;
-		rate0       = xirrData.guess ; //argv[2] ? value_get_as_float (argv[2]) : 0.1;
+        data = new GoalSeekData();
+        GoalSeek.goal_seek_initialize(data);
+        data.xmin = -1;
+        data.xmax = Math.min(1000, data.xmax);
+        rate0 = xirrData.guess;
 
-		status = GoalSeek.goalSeekNewton(
-		            new XIRRNPV(), null, data, xirrData, rate0 ) ;
+        status = GoalSeek.goalSeekNewton(
+                new XIRRNPV(), null, data, xirrData, rate0);
 
-		if (status.seekStatus == GoalSeekStatus.GOAL_SEEK_OK)  {
-//			result = value_new_float(data.root);
-			result = ((Double) status.returnData).doubleValue() ;    //data.root ;
-		}
-		else    {
-//			result = value_new_error_NUM (ei.pos);
-			result = Double.NaN ;
-		}
+        if (status.seekStatus == GoalSeekStatus.GOAL_SEEK_OK) {
+            result = (Double) status.returnData;
+        } else {
+            result = Double.NaN;
+        }
 
-		System.out.println( "XIRR Result - " + result ) ;
-		return (Double.isNaN(result)) ? (result - 1) : result ;
-	}
-
-}   /*  End of the XIRR class. */
+        System.out.println("XIRR Result - " + result);
+        return !(Double.isNaN(result)) ? (result - 1.0) : result;
+    }
+}
