@@ -62,7 +62,7 @@ class XIRRTest extends Specification {
 
     def "datevalue"() {
         expect:
-        XIRRData.getExcelDateValue(new GregorianCalendar(2015, 0, 2)) == 42006
+        XIRRData.getExcelDateValue(new GregorianCalendar(2015, JANUARY, 2)) == 42006
     }
 
     def "very small epsilon"() {
