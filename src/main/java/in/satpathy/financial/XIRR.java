@@ -28,6 +28,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
+import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
+
 /**
  * Data structure to hold XIRR data.
  */
@@ -126,8 +128,8 @@ public class XIRR {
 
         status = GoalSeek.goalSeekNewton(new XIRRNPV(), null, data, this, rate0);
 
-        if (status.getSeekStatus() == GoalSeekStatus.GOAL_SEEK_OK) {
-            result = (Double) status.getReturnData();
+        if (status.getSeekStatus() == OK) {
+            result = status.getReturnData();
         } else {
             result = Double.NaN;
         }

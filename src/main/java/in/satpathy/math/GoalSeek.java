@@ -20,6 +20,9 @@
  */
 package in.satpathy.math;
 
+import static in.satpathy.math.GoalSeekStatus.ReturnStatus.ERROR;
+import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
+
 /**
  * A generic root finder.
  */
@@ -111,29 +114,29 @@ public class GoalSeek {
             if (DEBUG_GOAL_SEEK) {
                 log("==> xl == xr");
             }
-            return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
+            return new GoalSeekStatus(ERROR, null);
         }
 
         status = f.f(xl, userData); //yl, userData ) ;
-        if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
+        if (status.getSeekStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xl\n");
             }
             return status;
         }
-        yl = (Double) status.getReturnData();
+        yl = status.getReturnData();
         if (DEBUG_GOAL_SEEK) {
             log("==> xl = " + xl + " ; yl =" + yl);
         }
 
         status = f.f(xr, userData);  //yr, userData ) ;
-        if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
+        if (status.getSeekStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xr");
             }
             return status;
         }
-        yr = (Double) status.getReturnData();
+        yr = status.getReturnData();
         if (DEBUG_GOAL_SEEK) {
             log("==> xr = " + xr + " ; yr = " + yr);
         }
@@ -144,8 +147,8 @@ public class GoalSeek {
         }
 
         return Double.isInfinite(dfx) ?
-                new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null) :
-                new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_OK, dfx);
+                new GoalSeekStatus(ERROR, null) :
+                new GoalSeekStatus(OK, dfx);
     }
 
     /**
@@ -179,7 +182,7 @@ public class GoalSeek {
         double precision = data.precision / 2;
 
         if (data.have_root) {
-            return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_OK, data.root);
+            return new GoalSeekStatus(OK, data.root);
         }
 
         if (DEBUG_GOAL_SEEK) {
@@ -197,19 +200,19 @@ public class GoalSeek {
             }
             //  Check whether we have left the valid interval.
             if (x0 < data.xmin || x0 > data.xmax) {
-                return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
+                return new GoalSeekStatus(ERROR, null);
             }
             status = f.f(x0, userData); //y0, userData) ;
-            if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
+            if (status.getSeekStatus() != OK) {
                 return status;
             }
 
-            y0 = (Double) status.getReturnData();
+            y0 = status.getReturnData();
             if (DEBUG_GOAL_SEEK) {
                 log("   y0 = " + y0);
             }
             if (update_data(x0, y0, data)) {
-                return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_OK, data.root);
+                return new GoalSeekStatus(OK, data.root);
             }
 
             if (df != null) {
@@ -226,14 +229,14 @@ public class GoalSeek {
                 }
                 status = fake_df(f, x0, xstep, data, userData);
             }
-            if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
+            if (status.getSeekStatus() != OK) {
                 return status;
             }
 
-            df0 = (Double) status.getReturnData();
+            df0 = status.getReturnData();
             //  If we hit a flat spot, we are in trouble.
             if (df0 == 0) {
-                return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
+                return new GoalSeekStatus(ERROR, null);
             }
 
 			/*
@@ -252,11 +255,11 @@ public class GoalSeek {
             if (stepsize < precision) {
                 data.root = x0;
                 data.have_root = true;
-                return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_OK, data.root);
+                return new GoalSeekStatus(OK, data.root);
             }
         }
 
-        return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
+        return new GoalSeekStatus(ERROR, null);
     }
 
     /**

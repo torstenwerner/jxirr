@@ -22,18 +22,19 @@ package in.satpathy.math;
 
 public class GoalSeekStatus {
 
-    public static final int GOAL_SEEK_OK = 0;
-    public static final int GOAL_SEEK_ERROR = 1;
+    public static enum ReturnStatus {
+        OK, ERROR
+    }
 
-    private final int seekStatus;
+    private final ReturnStatus seekStatus;
     private final Double returnData;
 
-    public GoalSeekStatus(int seekStatus, Double returnData) {
+    public GoalSeekStatus(ReturnStatus seekStatus, Double returnData) {
         this.seekStatus = seekStatus;
         this.returnData = returnData;
     }
 
-    public int getSeekStatus() {
+    public ReturnStatus getSeekStatus() {
         return seekStatus;
     }
 
