@@ -126,8 +126,8 @@ public class XIRR {
 
         status = GoalSeek.goalSeekNewton(new XIRRNPV(), null, data, this, rate0);
 
-        if (status.seekStatus == GoalSeekStatus.GOAL_SEEK_OK) {
-            result = (Double) status.returnData;
+        if (status.getSeekStatus() == GoalSeekStatus.GOAL_SEEK_OK) {
+            result = (Double) status.getReturnData();
         } else {
             result = Double.NaN;
         }

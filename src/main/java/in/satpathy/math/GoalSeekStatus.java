@@ -20,70 +20,29 @@
  */
 package in.satpathy.math;
 
-/**
- *
- *
- *  @author : gsatpath
- *  @version : 1.0.0
- *  Date: Oct 19, 2005, Time: 7:54:37 AM
- */
 public class GoalSeekStatus {
 
-	public static final int GOAL_SEEK_OK     = 0 ;
-	public static final int GOAL_SEEK_ERROR  = 1 ;
+    public static final int GOAL_SEEK_OK = 0;
+    public static final int GOAL_SEEK_ERROR = 1;
 
-	public int      seekStatus ;
-	public Object   returnData ;
+    private final int seekStatus;
+    private final Object returnData;
 
-	/**
-	 *  Constuctor
-	 *
-	 *  @param pStatus
-	 *  @param retData
-	 */
-	public GoalSeekStatus( int pStatus, Object retData ) {
-		this.seekStatus = pStatus ;
-		this.returnData = retData ;
-	}
+    public GoalSeekStatus(int seekStatus, Object returnData) {
+        this.seekStatus = seekStatus;
+        this.returnData = returnData;
+    }
 
-	/**
-	 *
-	 *  @return
-	 */
-	public int getSeekStatus() {
-		return seekStatus;
-	}
+    public int getSeekStatus() {
+        return seekStatus;
+    }
 
-	/**
-	 *
-	 *  @param seekStatus
-	 */
-	public void setSeekStatus( int seekStatus ) {
-		this.seekStatus = seekStatus;
-	}
+    public Object getReturnData() {
+        return returnData;
+    }
 
-	/**
-	 *
-	 *  @return
-	 */
-	public Object getReturnData() {
-		return returnData;
-	}
+    public String toString() {
+        return "Status - " + seekStatus + ", Return Data - " + returnData;
+    }
 
-	/**
-	 *
-	 *  @param returnData
-	 */
-	public void setReturnData( Object returnData ) {
-		this.returnData = returnData;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public String toString() {
-		return "Status - " + seekStatus + ", Return Data - " + returnData ;
-	}
-
-}   /*  End of the GoalSeekStatus class. */
+}

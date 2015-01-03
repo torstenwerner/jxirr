@@ -115,25 +115,25 @@ public class GoalSeek {
         }
 
         status = f.f(xl, userData); //yl, userData ) ;
-        if (status.seekStatus != GoalSeekStatus.GOAL_SEEK_OK) {
+        if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xl\n");
             }
             return status;
         }
-        yl = (Double) status.returnData;
+        yl = (Double) status.getReturnData();
         if (DEBUG_GOAL_SEEK) {
             log("==> xl = " + xl + " ; yl =" + yl);
         }
 
         status = f.f(xr, userData);  //yr, userData ) ;
-        if (status.seekStatus != GoalSeekStatus.GOAL_SEEK_OK) {
+        if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xr");
             }
             return status;
         }
-        yr = (Double) status.returnData;
+        yr = (Double) status.getReturnData();
         if (DEBUG_GOAL_SEEK) {
             log("==> xr = " + xr + " ; yr = " + yr);
         }
@@ -200,11 +200,11 @@ public class GoalSeek {
                 return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
             }
             status = f.f(x0, userData); //y0, userData) ;
-            if (status.seekStatus != GoalSeekStatus.GOAL_SEEK_OK) {
+            if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
                 return status;
             }
 
-            y0 = (Double) status.returnData;
+            y0 = (Double) status.getReturnData();
             if (DEBUG_GOAL_SEEK) {
                 log("   y0 = " + y0);
             }
@@ -226,11 +226,11 @@ public class GoalSeek {
                 }
                 status = fake_df(f, x0, xstep, data, userData);
             }
-            if (status.seekStatus != GoalSeekStatus.GOAL_SEEK_OK) {
+            if (status.getSeekStatus() != GoalSeekStatus.GOAL_SEEK_OK) {
                 return status;
             }
 
-            df0 = (Double) status.returnData;
+            df0 = (Double) status.getReturnData();
             //  If we hit a flat spot, we are in trouble.
             if (df0 == 0) {
                 return new GoalSeekStatus(GoalSeekStatus.GOAL_SEEK_ERROR, null);
