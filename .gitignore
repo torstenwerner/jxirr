@@ -1,7 +1,9 @@
 .classpath
+.gradle
 .idea
 .project
 atlassian-ide-plugin.xml
 bin
+build
 jxirr.iml
 target
