@@ -26,32 +26,23 @@ import in.satpathy.math.GoalSeekStatus;
 import static in.satpathy.math.GoalSeekStatus.ReturnStatus.ERROR;
 import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
 
-public class XIRRNPV implements GoalSeekFunction {
+public class XIRRNPV implements GoalSeekFunction<XIRR> {
 
     public static final double DAYS_OF_YEAR = 365.0;
 
     public XIRRNPV() {
     }
 
-    public GoalSeekStatus f(double rate, Object userData) {
-        XIRR p;
-        double[] values;
-        double[] dates;
-        double sum;
-
-        p = (XIRR) userData;
-        values = p.values;
-        dates = p.dates;
-        sum = 0;
-        for (int i = 0; i < dates.length; i++) {
-            double d = dates[i] - dates[0];
+    public GoalSeekStatus f(double rate, XIRR userData) {
+        double sum = 0;
+        for (int i = 0; i < userData.dates.length; i++) {
+            double d = userData.dates[i] - userData.dates[0];
             if (d < 0) {
                 return new GoalSeekStatus(ERROR, null);
             }
-            sum += values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
+            sum += userData.values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
         }
 
         return new GoalSeekStatus(OK, sum);
     }
-
 }

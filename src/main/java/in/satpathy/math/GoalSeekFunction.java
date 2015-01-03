@@ -20,16 +20,8 @@
  */
 package in.satpathy.math;
 
-/*
- *  Imports
- */
+public interface GoalSeekFunction<UserDataType> {
 
-/**
- * @author : gsatpath
- * @version : 1.0.0 Date: Oct 19, 2005, Time: 8:55:57 AM
- */
-public interface GoalSeekFunction {
+	public GoalSeekStatus f(double rate, UserDataType userData);
 
-	public GoalSeekStatus f( double rate, Object userData ) ;
-
-}   /*  End of the GoalSeekFunction interface. */
+}

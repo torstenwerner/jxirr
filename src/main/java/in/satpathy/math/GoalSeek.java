@@ -88,9 +88,9 @@ public class GoalSeek {
      *  Calculate a reasonable approximation to the derivative of a function
      *  in a single point.
      */
-    public static GoalSeekStatus fake_df(GoalSeekFunction f, double x,
+    public static <UserDataType> GoalSeekStatus fake_df(GoalSeekFunction<UserDataType> f, double x,
                                          double xstep, GoalSeekData data,
-                                         Object userData) {
+                                         UserDataType userData) {
         double xl;
         double xr;
         double yl;
@@ -173,11 +173,11 @@ public class GoalSeek {
      * number of significant digits (asymptotically) goes like i^2 unless the root is a multiple root in which case it
      * is only like c*i.)
      */
-    public static GoalSeekStatus goalSeekNewton(
-            GoalSeekFunction f,
-            GoalSeekFunction df,
+    public static <UserDataType> GoalSeekStatus goalSeekNewton(
+            GoalSeekFunction<UserDataType> f,
+            GoalSeekFunction<UserDataType> df,
             GoalSeekData data,
-            Object userData, double x0) {
+            UserDataType userData, double x0) {
         int iterations;
         double precision = data.precision / 2;
 
