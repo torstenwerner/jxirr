@@ -26,9 +26,9 @@ public class GoalSeekStatus {
     public static final int GOAL_SEEK_ERROR = 1;
 
     private final int seekStatus;
-    private final Object returnData;
+    private final Double returnData;
 
-    public GoalSeekStatus(int seekStatus, Object returnData) {
+    public GoalSeekStatus(int seekStatus, Double returnData) {
         this.seekStatus = seekStatus;
         this.returnData = returnData;
     }
@@ -37,7 +37,7 @@ public class GoalSeekStatus {
         return seekStatus;
     }
 
-    public Object getReturnData() {
+    public Double getReturnData() {
         return returnData;
     }
 
