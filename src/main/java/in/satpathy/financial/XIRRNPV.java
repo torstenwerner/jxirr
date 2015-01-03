@@ -31,12 +31,12 @@ public class XIRRNPV implements GoalSeekFunction {
     }
 
     public GoalSeekStatus f(double rate, Object userData) {
-        XIRRData p;
+        XIRR p;
         double[] values;
         double[] dates;
         double sum;
 
-        p = (XIRRData) userData;
+        p = (XIRR) userData;
         values = p.values;
         dates = p.dates;
         sum = 0;

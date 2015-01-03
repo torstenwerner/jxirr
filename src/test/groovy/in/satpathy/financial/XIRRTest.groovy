@@ -51,10 +51,10 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2000, MARCH, 12),
                 new GregorianCalendar(2000, MAY, 1)
         ]
-        XIRRData data = new XIRRData(values, dates)
+        XIRR data = new XIRR(values, dates)
 
         when:
-        double xirrValue = XIRR.xirr(data)
+        double xirrValue = data.xirr()
 
         then:
         xirrValue.isCloseTo(0.2248376916245216)
@@ -67,10 +67,10 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2011, JANUARY, 1),
                 new GregorianCalendar(2012, JANUARY, 1)
         ]
-        XIRRData data = new XIRRData(values, dates)
+        XIRR data = new XIRR(values, dates)
 
         when:
-        double xirrValue = XIRR.xirr(data)
+        double xirrValue = data.xirr()
 
         then:
         xirrValue.isCloseTo(0.1, 1e-8)
@@ -83,10 +83,10 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2012, JANUARY, 1),
                 new GregorianCalendar(2013, JANUARY, 1)
         ]
-        XIRRData data = new XIRRData(values, dates)
+        XIRR data = new XIRR(values, dates)
 
         when:
-        double xirrValue = XIRR.xirr(data)
+        double xirrValue = data.xirr()
 
         then:
         xirrValue.isCloseTo(0.0997135859, 1e-8)
@@ -94,7 +94,7 @@ class XIRRTest extends Specification {
 
     def "datevalue"() {
         expect:
-        XIRRData.getExcelDateValue(new GregorianCalendar(2015, JANUARY, 2)) == 42006
+        XIRR.getExcelDateValue(new GregorianCalendar(2015, JANUARY, 2)) == 42006
     }
 
     def "very small epsilon"() {
