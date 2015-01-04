@@ -137,7 +137,7 @@ public class Xirr {
         for (int date : dates) {
             if (date < dates[0]) {
                 // TODO: why?
-                throw new RuntimeException("The dates array must be sorted in ascending order.");
+                throw new RuntimeException("The dates array must be sorted properly.");
             }
         }
     }
