@@ -1,5 +1,5 @@
 /*
- *  GoalSeekData.java
+ *  GoalSeekjava
  *  Copyright (C) 2005 Gautam Satpathy
  *  gautam@satpathy.in
  *  www.satpathy.in
@@ -39,6 +39,60 @@ public class GoalSeekData {
         xmin = -1e10;
         xmax = +1e10;
         precision = 1e-15;
+    }
+
+    public boolean update(double x, double y) {
+        if (y > 0) {
+            if (havexpos) {
+                if (havexneg) {
+                    /*
+                     *  When we have pos and neg, prefer the new point only
+					 *  if it makes the pos-neg x-internal smaller.
+					 */
+                    if (Math.abs(x - xneg) < Math.abs(xpos - xneg)) {
+                        xpos = x;
+                        ypos = y;
+                    }
+                } else if (y < ypos) {
+                    /* We have pos only and our neg y is closer to zero.  */
+                    xpos = x;
+                    ypos = y;
+                }
+            } else {
+                xpos = x;
+                ypos = y;
+                havexpos = true;
+            }
+            return false;
+        } else if (y < 0) {
+            if (havexneg) {
+                if (havexpos) {
+                    /*
+                     * When we have pos and neg, prefer the new point only
+					 * if it makes the pos-neg x-internal smaller.
+					 */
+                    if (Math.abs(x - xpos) < Math.abs(xpos - xneg)) {
+                        xneg = x;
+                        yneg = y;
+                    }
+                } else if (-y < -yneg) {
+                    /* We have neg only and our neg y is closer to zero.  */
+                    xneg = x;
+                    yneg = y;
+                }
+
+            } else {
+                xneg = x;
+                yneg = y;
+                havexneg = true;
+            }
+            return false;
+        } else {
+            /* Lucky guess...  */
+            have_root = true;
+            root = x;
+            return true;
+        }
     }
 
     public double xmin;             /* Minimum allowed values for x.  */

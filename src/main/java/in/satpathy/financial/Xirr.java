@@ -121,9 +121,9 @@ public class Xirr {
         final GoalSeekData data = new GoalSeekData();
         data.xmin = -1;
         data.xmax = Math.min(1000, data.xmax);
+        final GoalSeek goalSeek = new GoalSeek(data);
 
-        final GoalSeekResult result = GoalSeek.goalSeekNewton(this::residual, null, data, guess);
-
+        final GoalSeekResult result = goalSeek.newton(this::residual, null, guess);
         if (result.getStatus() == OK) {
             return result.getValue() - 1.0;
         } else {

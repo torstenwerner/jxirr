@@ -31,72 +31,23 @@ import static in.satpathy.math.GoalSeekResult.Status.OK;
 public class GoalSeek {
     private static final boolean DEBUG_GOAL_SEEK = false;
 
-    public static boolean update_data(double x, double y, GoalSeekData data) {
-        if (y > 0) {
-            if (data.havexpos) {
-                if (data.havexneg) {
-                    /*
-                     *  When we have pos and neg, prefer the new point only
-					 *  if it makes the pos-neg x-internal smaller.
-					 */
-                    if (Math.abs(x - data.xneg) < Math.abs(data.xpos - data.xneg)) {
-                        data.xpos = x;
-                        data.ypos = y;
-                    }
-                } else if (y < data.ypos) {
-                    /* We have pos only and our neg y is closer to zero.  */
-                    data.xpos = x;
-                    data.ypos = y;
-                }
-            } else {
-                data.xpos = x;
-                data.ypos = y;
-                data.havexpos = true;
-            }
-            return false;
-        } else if (y < 0) {
-            if (data.havexneg) {
-                if (data.havexpos) {
-                    /*
-                     * When we have pos and neg, prefer the new point only
-					 * if it makes the pos-neg x-internal smaller.
-					 */
-                    if (Math.abs(x - data.xpos) < Math.abs(data.xpos - data.xneg)) {
-                        data.xneg = x;
-                        data.yneg = y;
-                    }
-                } else if (-y < -data.yneg) {
-                    /* We have neg only and our neg y is closer to zero.  */
-                    data.xneg = x;
-                    data.yneg = y;
-                }
+    private final GoalSeekData data;
 
-            } else {
-                data.xneg = x;
-                data.yneg = y;
-                data.havexneg = true;
-            }
-            return false;
-        } else {
-            /* Lucky guess...  */
-            data.have_root = true;
-            data.root = x;
-            return true;
-        }
+    public GoalSeek(GoalSeekData data) {
+        this.data = data;
     }
 
-
     /*
-     *  Calculate a reasonable approximation to the derivative of a function
-     *  in a single point.
-     */
-    public static GoalSeekResult fake_df(Function<Double, GoalSeekResult> f, double x, double xstep, GoalSeekData data) {
+         *  Calculate a reasonable approximation to the derivative of a function
+         *  in a single point.
+         */
+    private GoalSeekResult fake_df(Function<Double, GoalSeekResult> f, double x, double xstep) {
         double xl;
         double xr;
         double yl;
         double yr;
         double dfx;
-        GoalSeekResult status;
+        GoalSeekResult result;
 
         if (DEBUG_GOAL_SEEK) {
             log("fake_df (x = " + x + ", xstep = " + xstep + ")");
@@ -117,26 +68,26 @@ public class GoalSeek {
             return new GoalSeekResult(ERROR, null);
         }
 
-        status = f.apply(xl);
-        if (status.getStatus() != OK) {
+        result = f.apply(xl);
+        if (result.getStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xl\n");
             }
-            return status;
+            return result;
         }
-        yl = status.getValue();
+        yl = result.getValue();
         if (DEBUG_GOAL_SEEK) {
             log("==> xl = " + xl + " ; yl =" + yl);
         }
 
-        status = f.apply(xr);
-        if (status.getStatus() != OK) {
+        result = f.apply(xr);
+        if (result.getStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xr");
             }
-            return status;
+            return result;
         }
-        yr = status.getValue();
+        yr = result.getValue();
         if (DEBUG_GOAL_SEEK) {
             log("==> xr = " + xr + " ; yr = " + yr);
         }
@@ -161,8 +112,8 @@ public class GoalSeek {
      * number of significant digits (asymptotically) goes like i^2 unless the root is a multiple root in which case it
      * is only like c*i.)
      */
-    public static GoalSeekResult goalSeekNewton(Function<Double, GoalSeekResult> f, Function<Double, GoalSeekResult> df,
-                                                GoalSeekData data, double x0) {
+    public GoalSeekResult newton(Function<Double, GoalSeekResult> f, Function<Double, GoalSeekResult> df,
+                                 double x0) {
         int iterations;
         double precision = data.precision / 2;
 
@@ -171,7 +122,7 @@ public class GoalSeek {
         }
 
         if (DEBUG_GOAL_SEEK) {
-            log("goalSeekNewton");
+            log("newton");
         }
 
         for (iterations = 0; iterations < 20; iterations++) {
@@ -179,29 +130,29 @@ public class GoalSeek {
             double y0;
             double df0;
             double stepsize;
-            GoalSeekResult status;
+            GoalSeekResult result;
             if (DEBUG_GOAL_SEEK) {
-                log("goalSeekNewton - x0 = " + x0 + ", (i = " + iterations + " )");
+                log("newton - x0 = " + x0 + ", (i = " + iterations + " )");
             }
             //  Check whether we have left the valid interval.
             if (x0 < data.xmin || x0 > data.xmax) {
                 return new GoalSeekResult(ERROR, null);
             }
-            status = f.apply(x0);
-            if (status.getStatus() != OK) {
-                return status;
+            result = f.apply(x0);
+            if (result.getStatus() != OK) {
+                return result;
             }
 
-            y0 = status.getValue();
+            y0 = result.getValue();
             if (DEBUG_GOAL_SEEK) {
                 log("   y0 = " + y0);
             }
-            if (update_data(x0, y0, data)) {
+            if (data.update(x0, y0)) {
                 return new GoalSeekResult(OK, data.root);
             }
 
             if (df != null) {
-                status = df.apply(x0);
+                result = df.apply(x0);
             } else {
                 double xstep;
                 if (Math.abs(x0) < 1e-10) {
@@ -212,20 +163,20 @@ public class GoalSeek {
                 } else {
                     xstep = Math.abs(x0) / 1e6;
                 }
-                status = fake_df(f, x0, xstep, data);
+                result = fake_df(f, x0, xstep);
             }
-            if (status.getStatus() != OK) {
-                return status;
+            if (result.getStatus() != OK) {
+                return result;
             }
 
-            df0 = status.getValue();
+            df0 = result.getValue();
             //  If we hit a flat spot, we are in trouble.
             if (df0 == 0) {
                 return new GoalSeekResult(ERROR, null);
             }
 
 			/*
-			 * Overshoot slightly to prevent us from staying on
+             * Overshoot slightly to prevent us from staying on
 			 * just one side of the root.
 			 */
             x1 = x0 - 1.000001 * y0 / df0;
