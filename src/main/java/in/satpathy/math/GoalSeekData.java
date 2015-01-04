@@ -26,27 +26,35 @@ package in.satpathy.math;
 
 
 /**
- *  Data structure used by the GoalSeek algo.
+ * Data structure used by the GoalSeek algo.
  *
  * @author : gsatpath
  * @version : 1.0.0 Date: Oct 19, 2005, Time: 7:51:55 AM
  */
 public class GoalSeekData {
+    public GoalSeekData() {
+        havexpos = havexneg = have_root = false;
+        xpos = xneg = root = Double.NaN; //gnm_nan;
+        ypos = yneg = Double.NaN; //gnm_nan ;
+        xmin = -1e10;
+        xmax = +1e10;
+        precision = 1e-15;
+    }
 
-	public double   xmin;             /* Minimum allowed values for x.  */
-	public double   xmax;             /* Maximum allowed values for x.  */
-	public double   precision;        /* Desired relative precision.  */
+    public double xmin;             /* Minimum allowed values for x.  */
+    public double xmax;             /* Maximum allowed values for x.  */
+    public double precision;        /* Desired relative precision.  */
 
-	public boolean  havexpos;        /* Do we have a valid xpos?  */
-	public double   xpos;             /* Value for which f(xpos) > 0.  */
-	public double   ypos;             /* f(xpos).  */
+    public boolean havexpos;        /* Do we have a valid xpos?  */
+    public double xpos;             /* Value for which f(xpos) > 0.  */
+    public double ypos;             /* f(xpos).  */
 
-	public boolean  havexneg;        /* Do we have a valid xneg?  */
-	public double   xneg;             /* Value for which f(xneg) < 0.  */
-	public double   yneg;             /* f(xneg).  */
+    public boolean havexneg;        /* Do we have a valid xneg?  */
+    public double xneg;             /* Value for which f(xneg) < 0.  */
+    public double yneg;             /* f(xneg).  */
 
-	public boolean  have_root;       /* Do we have a valid root?  */
-	public double   root;             /* Value for which f(root) == 0.  */
+    public boolean have_root;       /* Do we have a valid root?  */
+    public double root;             /* Value for which f(root) == 0.  */
 
 
 }   /*  End of the GoalSeekData class. */

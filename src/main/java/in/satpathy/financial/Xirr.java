@@ -22,15 +22,15 @@ package in.satpathy.financial;
 
 import in.satpathy.math.GoalSeek;
 import in.satpathy.math.GoalSeekData;
-import in.satpathy.math.GoalSeekStatus;
+import in.satpathy.math.GoalSeekResult;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
-import static in.satpathy.math.GoalSeekStatus.ReturnStatus.ERROR;
-import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
+import static in.satpathy.math.GoalSeekResult.Status.ERROR;
+import static in.satpathy.math.GoalSeekResult.Status.OK;
 
 /**
  * Data structure to hold XIRR data.
@@ -49,9 +49,6 @@ public class Xirr {
         Objects.requireNonNull(dates);
         if (values.length != dates.length) {
             throw new RuntimeException("Both arrays must be of same size.");
-        }
-        if (values.length < 2) {
-            throw new RuntimeException("The arrays must contain at least 2 values.");
         }
         this.guess = guess;
         this.values = values;
@@ -117,40 +114,34 @@ public class Xirr {
 	 */
 
     public double findRoot() {
-        GoalSeekData data;
-        GoalSeekStatus status;
-        double result;
-        double rate0;
-
-        data = new GoalSeekData();
-        GoalSeek.goal_seek_initialize(data);
-        data.xmin = -1;
-        data.xmax = Math.min(1000, data.xmax);
-        rate0 = guess;
-
-        status = GoalSeek.goalSeekNewton(this::residual, null, data, rate0);
-
-        if (status.getSeekStatus() == OK) {
-            result = status.getReturnData();
-        } else {
-            result = Double.NaN;
+        if (values.length < 2) {
+            throw new RuntimeException("The arrays must contain at least 2 values.");
         }
 
-        System.out.println("XIRR Result - " + result);
-        return !(Double.isNaN(result)) ? (result - 1.0) : result;
+        final GoalSeekData data = new GoalSeekData();
+        data.xmin = -1;
+        data.xmax = Math.min(1000, data.xmax);
+
+        final GoalSeekResult result = GoalSeek.goalSeekNewton(this::residual, null, data, guess);
+
+        if (result.getStatus() == OK) {
+            return result.getValue() - 1.0;
+        } else {
+            return Double.NaN;
+        }
     }
 
-    private GoalSeekStatus residual(double rate) {
+    private GoalSeekResult residual(double rate) {
         double sum = 0;
         for (int i = 0; i < dates.length; i++) {
             double d = dates[i] - dates[0];
             if (d < 0) {
-                return new GoalSeekStatus(ERROR, null);
+                return new GoalSeekResult(ERROR, null);
             }
             sum += values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
         }
 
-        return new GoalSeekStatus(OK, sum);
+        return new GoalSeekResult(OK, sum);
     }
 
     /**
