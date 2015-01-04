@@ -35,7 +35,7 @@ import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
 /**
  * Data structure to hold XIRR data.
  */
-public class XIRR {
+public class Xirr {
     public static final GregorianCalendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, 11, 30);
     public static final double DAYS_OF_YEAR = 365.0;
     public static final double DEFAULT_GUESS = 0.1;
@@ -44,7 +44,7 @@ public class XIRR {
     private final double[] values;
     private final int[] dates;
 
-    public XIRR(double guess, double[] values, int[] dates) {
+    public Xirr(double guess, double[] values, int[] dates) {
         Objects.requireNonNull(values);
         Objects.requireNonNull(dates);
         if (values.length != dates.length) {
@@ -58,11 +58,11 @@ public class XIRR {
         this.dates = dates;
     }
 
-    public XIRR(double guess, double[] values, Calendar calendarDates[]) {
+    public Xirr(double guess, double[] values, Calendar calendarDates[]) {
         this(guess, values, getExcelDateArray(calendarDates));
     }
 
-    public XIRR(double[] values, Calendar calendarDates[]) {
+    public Xirr(double[] values, Calendar calendarDates[]) {
         this(DEFAULT_GUESS, values, calendarDates);
     }
 
@@ -71,7 +71,7 @@ public class XIRR {
      */
     private static int[] getExcelDateArray(Calendar calendarDates[]) {
         Objects.requireNonNull(calendarDates);
-        return Arrays.stream(calendarDates).mapToInt(XIRR::getExcelDateValue).toArray();
+        return Arrays.stream(calendarDates).mapToInt(Xirr::getExcelDateValue).toArray();
     }
 
     /**

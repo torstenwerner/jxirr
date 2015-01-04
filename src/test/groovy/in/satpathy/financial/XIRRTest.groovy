@@ -25,7 +25,7 @@ import spock.lang.Specification
 import static java.lang.Math.abs
 import static java.util.Calendar.*
 
-class XIRRTest extends Specification {
+class XirrTest extends Specification {
     static {
         Double.metaClass.isCloseTo = {
             double target, double epsilon = Math.sqrt(Double.MIN_VALUE) ->
@@ -51,7 +51,7 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2000, MARCH, 12),
                 new GregorianCalendar(2000, MAY, 1)
         ]
-        XIRR root = new XIRR(values, dates)
+        Xirr root = new Xirr(values, dates)
 
         when:
         double xirrValue = root.findRoot()
@@ -67,7 +67,7 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2011, JANUARY, 1),
                 new GregorianCalendar(2012, JANUARY, 1)
         ]
-        XIRR data = new XIRR(values, dates)
+        Xirr data = new Xirr(values, dates)
 
         when:
         double root = data.findRoot()
@@ -83,7 +83,7 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2012, JANUARY, 1),
                 new GregorianCalendar(2013, JANUARY, 1)
         ]
-        XIRR root = new XIRR(values, dates)
+        Xirr root = new Xirr(values, dates)
 
         when:
         double xirrValue = root.findRoot()
@@ -94,7 +94,7 @@ class XIRRTest extends Specification {
 
     def "datevalue"() {
         expect:
-        XIRR.getExcelDateValue(new GregorianCalendar(2015, JANUARY, 2)) == 42006
+        Xirr.getExcelDateValue(new GregorianCalendar(2015, JANUARY, 2)) == 42006
     }
 
     def "very small epsilon"() {
