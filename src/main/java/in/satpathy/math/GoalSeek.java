@@ -20,6 +20,8 @@
  */
 package in.satpathy.math;
 
+import java.util.function.Function;
+
 import static in.satpathy.math.GoalSeekStatus.ReturnStatus.ERROR;
 import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
 
@@ -88,7 +90,7 @@ public class GoalSeek {
      *  Calculate a reasonable approximation to the derivative of a function
      *  in a single point.
      */
-    public static GoalSeekStatus fake_df(GoalSeekFunction f, double x, double xstep, GoalSeekData data) {
+    public static GoalSeekStatus fake_df(Function<Double, GoalSeekStatus> f, double x, double xstep, GoalSeekData data) {
         double xl;
         double xr;
         double yl;
@@ -115,7 +117,7 @@ public class GoalSeek {
             return new GoalSeekStatus(ERROR, null);
         }
 
-        status = f.f(xl);
+        status = f.apply(xl);
         if (status.getSeekStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xl\n");
@@ -127,7 +129,7 @@ public class GoalSeek {
             log("==> xl = " + xl + " ; yl =" + yl);
         }
 
-        status = f.f(xr);
+        status = f.apply(xr);
         if (status.getSeekStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xr");
@@ -171,7 +173,8 @@ public class GoalSeek {
      * number of significant digits (asymptotically) goes like i^2 unless the root is a multiple root in which case it
      * is only like c*i.)
      */
-    public static GoalSeekStatus goalSeekNewton(GoalSeekFunction f, GoalSeekFunction df, GoalSeekData data, double x0) {
+    public static GoalSeekStatus goalSeekNewton(Function<Double, GoalSeekStatus> f, Function<Double, GoalSeekStatus> df,
+                                                GoalSeekData data, double x0) {
         int iterations;
         double precision = data.precision / 2;
 
@@ -196,7 +199,7 @@ public class GoalSeek {
             if (x0 < data.xmin || x0 > data.xmax) {
                 return new GoalSeekStatus(ERROR, null);
             }
-            status = f.f(x0);
+            status = f.apply(x0);
             if (status.getSeekStatus() != OK) {
                 return status;
             }
@@ -210,7 +213,7 @@ public class GoalSeek {
             }
 
             if (df != null) {
-                status = df.f(x0);
+                status = df.apply(x0);
             } else {
                 double xstep;
                 if (Math.abs(x0) < 1e-10) {
