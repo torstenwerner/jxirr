@@ -28,15 +28,17 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.function.IntToDoubleFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static in.satpathy.math.GoalSeekResult.Status.ERROR;
 import static in.satpathy.math.GoalSeekResult.Status.OK;
 
 /**
  * Data structure to hold XIRR data.
  */
 public class Xirr {
-    public static final GregorianCalendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, 11, 30);
+    public static final Calendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, 11, 30);
     public static final double DAYS_OF_YEAR = 365.0;
     public static final double DEFAULT_GUESS = 0.1;
 
@@ -114,10 +116,7 @@ public class Xirr {
 	 */
 
     public double findRoot() {
-        if (values.length < 2) {
-            throw new RuntimeException("The arrays must contain at least 2 values.");
-        }
-
+        checkInput();
         final GoalSeekData data = new GoalSeekData();
         data.xmin = -1;
         data.xmax = Math.min(1000, data.xmax);
@@ -131,43 +130,38 @@ public class Xirr {
         }
     }
 
-    private GoalSeekResult residual(double rate) {
-        double sum = 0;
-        for (int i = 0; i < dates.length; i++) {
-            double d = dates[i] - dates[0];
-            if (d < 0) {
-                return new GoalSeekResult(ERROR, null);
-            }
-            sum += values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
+    private void checkInput() {
+        if (values.length < 2) {
+            throw new RuntimeException("The arrays must contain at least 2 values.");
         }
+        for (int date : dates) {
+            if (date < dates[0]) {
+                // TODO: why?
+                throw new RuntimeException("The dates array must be sorted in ascending order.");
+            }
+        }
+    }
 
+    private GoalSeekResult residual(double rate) {
+        final double sum = IntStream.range(0, dates.length).mapToDouble(residualAtIndex(rate)).sum();
         return new GoalSeekResult(OK, sum);
+    }
+
+    private IntToDoubleFunction residualAtIndex(double rate) {
+        return index -> values[index] / Math.pow(rate, (dates[index] - dates[0]) / DAYS_OF_YEAR);
     }
 
     /**
      * Expensive method. Don't call in loops etc.
      */
     public String toString() {
-        String text;
-        String valuesStr;
-        String datesStr;
-
-        text = "XIRRData - n = " + values.length + ", Guess = " + this.guess;
-        valuesStr = ", Values = ";
-        datesStr = ", Dates = ";
-        for (int i = 0; i < this.values.length; i++) {
-            valuesStr = valuesStr + this.values[i];
-            if (i < this.values.length - 1) {
-                valuesStr = valuesStr + ",";
-            }
-        }
-        for (int i = 0; i < this.dates.length; i++) {
-            datesStr = datesStr + this.dates[i];
-            if (i < this.dates.length - 1) {
-                datesStr = datesStr + ",";
-            }
-        }
-        return text + valuesStr + datesStr;
+        return "XIRRData - n = "
+                + values.length
+                + ", Guess = "
+                + guess + ", Values = "
+                + Arrays.stream(values).mapToObj(Double::toString).collect(Collectors.joining(","))
+                + ", Dates = "
+                + Arrays.stream(dates).mapToObj(Integer::toString).collect(Collectors.joining(","));
     }
 
 }
