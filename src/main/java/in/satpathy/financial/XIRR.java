@@ -24,6 +24,7 @@ import in.satpathy.math.GoalSeek;
 import in.satpathy.math.GoalSeekData;
 import in.satpathy.math.GoalSeekStatus;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
@@ -41,9 +42,9 @@ public class XIRR {
 
     private final double guess;
     private final double[] values;
-    private final double[] dates;
+    private final int[] dates;
 
-    public XIRR(double guess, double[] values, double[] dates) {
+    public XIRR(double guess, double[] values, int[] dates) {
         Objects.requireNonNull(values);
         Objects.requireNonNull(dates);
         if (values.length != dates.length) {
@@ -57,21 +58,20 @@ public class XIRR {
         this.dates = dates;
     }
 
-    public XIRR(double guess, double[] values, GregorianCalendar calendarDates[]) {
+    public XIRR(double guess, double[] values, Calendar calendarDates[]) {
         this(guess, values, getExcelDateArray(calendarDates));
     }
 
-    public XIRR(double[] values, GregorianCalendar calendarDates[]) {
+    public XIRR(double[] values, Calendar calendarDates[]) {
         this(DEFAULT_GUESS, values, calendarDates);
     }
 
-    private static double[] getExcelDateArray(GregorianCalendar calendarDates[]) {
+    /**
+     * converts an array of Calendar values into excel values
+     */
+    private static int[] getExcelDateArray(Calendar calendarDates[]) {
         Objects.requireNonNull(calendarDates);
-        final double[] dates = new double[calendarDates.length];
-        for (int i = 0; i < calendarDates.length; i++) {
-            dates[i] = getExcelDateValue(calendarDates[i]);
-        }
-        return dates;
+        return Arrays.stream(calendarDates).mapToInt(XIRR::getExcelDateValue).toArray();
     }
 
     /**
