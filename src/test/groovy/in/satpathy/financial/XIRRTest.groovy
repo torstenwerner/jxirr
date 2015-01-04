@@ -43,34 +43,34 @@ class XirrTest extends Specification {
 
     def "a simple test"() {
         setup:
-        double[] values = [-6000, 2134, 1422, 1933, 1422]
-        GregorianCalendar[] dates = [
+        final double[] values = [-6000, 2134, 1422, 1933, 1422]
+        final GregorianCalendar[] dates = [
                 new GregorianCalendar(1999, JANUARY, 15),
                 new GregorianCalendar(1999, APRIL, 4),
                 new GregorianCalendar(1999, MAY, 9),
                 new GregorianCalendar(2000, MARCH, 12),
                 new GregorianCalendar(2000, MAY, 1)
         ]
-        Xirr root = new Xirr(values, dates)
+        def xirr = new Xirr(values, dates)
 
         when:
-        double xirrValue = root.findRoot()
+        def root = xirr.findRoot()
 
         then:
-        xirrValue.isCloseTo(0.2248376916245216)
+        root.isCloseTo(0.2248376916245216)
     }
 
     def "regular year"() {
         setup:
-        double[] values = [-100, 110]
-        GregorianCalendar[] dates = [
+        final double[] values = [-100, 110]
+        final GregorianCalendar[] dates = [
                 new GregorianCalendar(2011, JANUARY, 1),
                 new GregorianCalendar(2012, JANUARY, 1)
         ]
-        Xirr data = new Xirr(values, dates)
+        def xirr = new Xirr(values, dates)
 
         when:
-        double root = data.findRoot()
+        def root = xirr.findRoot()
 
         then:
         root.isCloseTo(0.1, 1e-8)
@@ -78,18 +78,18 @@ class XirrTest extends Specification {
 
     def "leap year is not fully correct"() {
         setup:
-        double[] values = [-100, 110]
-        GregorianCalendar[] dates = [
+        final double[] values = [-100, 110]
+        final GregorianCalendar[] dates = [
                 new GregorianCalendar(2012, JANUARY, 1),
                 new GregorianCalendar(2013, JANUARY, 1)
         ]
-        Xirr root = new Xirr(values, dates)
+        def xirr = new Xirr(values, dates)
 
         when:
-        double xirrValue = root.findRoot()
+        def root = xirr.findRoot()
 
         then:
-        xirrValue.isCloseTo(0.0997135859, 1e-8)
+        root.isCloseTo(0.0997135859, 1e-8)
     }
 
     def "datevalue"() {
