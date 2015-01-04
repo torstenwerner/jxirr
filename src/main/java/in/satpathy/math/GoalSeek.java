@@ -56,7 +56,7 @@ public class GoalSeek {
             if (data.havexneg) {
                 if (data.havexpos) {
                     /*
-					 * When we have pos and neg, prefer the new point only
+                     * When we have pos and neg, prefer the new point only
 					 * if it makes the pos-neg x-internal smaller.
 					 */
                     if (Math.abs(x - data.xpos) < Math.abs(data.xpos - data.xneg)) {
@@ -64,7 +64,7 @@ public class GoalSeek {
                         data.yneg = y;
                     }
                 } else if (-y < -data.yneg) {
-					/* We have neg only and our neg y is closer to zero.  */
+                    /* We have neg only and our neg y is closer to zero.  */
                     data.xneg = x;
                     data.yneg = y;
                 }
@@ -88,9 +88,7 @@ public class GoalSeek {
      *  Calculate a reasonable approximation to the derivative of a function
      *  in a single point.
      */
-    public static <UserDataType> GoalSeekStatus fake_df(GoalSeekFunction<UserDataType> f, double x,
-                                         double xstep, GoalSeekData data,
-                                         UserDataType userData) {
+    public static GoalSeekStatus fake_df(GoalSeekFunction f, double x, double xstep, GoalSeekData data) {
         double xl;
         double xr;
         double yl;
@@ -117,7 +115,7 @@ public class GoalSeek {
             return new GoalSeekStatus(ERROR, null);
         }
 
-        status = f.f(xl, userData); //yl, userData ) ;
+        status = f.f(xl);
         if (status.getSeekStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xl\n");
@@ -129,7 +127,7 @@ public class GoalSeek {
             log("==> xl = " + xl + " ; yl =" + yl);
         }
 
-        status = f.f(xr, userData);  //yr, userData ) ;
+        status = f.f(xr);
         if (status.getSeekStatus() != OK) {
             if (DEBUG_GOAL_SEEK) {
                 log("==> failure at xr");
@@ -165,19 +163,15 @@ public class GoalSeek {
 
     /**
      * Seek a goal (root) using Newton's iterative method.
-     * <p/>
+     * <p>
      * The supplied function must (should) be continuously differentiable in the supplied interval.  If NULL is used for
      * `df', this function will estimate the derivative.
-     * <p/>
+     * <p>
      * This method will find a root rapidly provided the initial guess, x0, is sufficiently close to the root.  (The
      * number of significant digits (asymptotically) goes like i^2 unless the root is a multiple root in which case it
      * is only like c*i.)
      */
-    public static <UserDataType> GoalSeekStatus goalSeekNewton(
-            GoalSeekFunction<UserDataType> f,
-            GoalSeekFunction<UserDataType> df,
-            GoalSeekData data,
-            UserDataType userData, double x0) {
+    public static GoalSeekStatus goalSeekNewton(GoalSeekFunction f, GoalSeekFunction df, GoalSeekData data, double x0) {
         int iterations;
         double precision = data.precision / 2;
 
@@ -202,7 +196,7 @@ public class GoalSeek {
             if (x0 < data.xmin || x0 > data.xmax) {
                 return new GoalSeekStatus(ERROR, null);
             }
-            status = f.f(x0, userData); //y0, userData) ;
+            status = f.f(x0);
             if (status.getSeekStatus() != OK) {
                 return status;
             }
@@ -216,7 +210,7 @@ public class GoalSeek {
             }
 
             if (df != null) {
-                status = df.f(x0, userData);
+                status = df.f(x0);
             } else {
                 double xstep;
                 if (Math.abs(x0) < 1e-10) {
@@ -227,7 +221,7 @@ public class GoalSeek {
                 } else {
                     xstep = Math.abs(x0) / 1e6;
                 }
-                status = fake_df(f, x0, xstep, data, userData);
+                status = fake_df(f, x0, xstep, data);
             }
             if (status.getSeekStatus() != OK) {
                 return status;

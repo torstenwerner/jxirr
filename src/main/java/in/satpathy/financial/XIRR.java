@@ -128,7 +128,7 @@ public class XIRR {
         data.xmax = Math.min(1000, data.xmax);
         rate0 = guess;
 
-        status = GoalSeek.goalSeekNewton(this::residual, null, data, this, rate0);
+        status = GoalSeek.goalSeekNewton(this::residual, null, data, rate0);
 
         if (status.getSeekStatus() == OK) {
             result = status.getReturnData();
@@ -140,14 +140,14 @@ public class XIRR {
         return !(Double.isNaN(result)) ? (result - 1.0) : result;
     }
 
-    private GoalSeekStatus residual(double rate, XIRR userData) {
+    private GoalSeekStatus residual(double rate) {
         double sum = 0;
-        for (int i = 0; i < userData.dates.length; i++) {
-            double d = userData.dates[i] - userData.dates[0];
+        for (int i = 0; i < dates.length; i++) {
+            double d = dates[i] - dates[0];
             if (d < 0) {
                 return new GoalSeekStatus(ERROR, null);
             }
-            sum += userData.values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
+            sum += values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
         }
 
         return new GoalSeekStatus(OK, sum);
