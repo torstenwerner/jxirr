@@ -20,8 +20,9 @@
  */
 package in.satpathy.math;
 
+@FunctionalInterface
 public interface GoalSeekFunction<UserDataType> {
 
-	public GoalSeekStatus f(double rate, UserDataType userData);
+    public GoalSeekStatus f(double rate, UserDataType userData);
 
 }

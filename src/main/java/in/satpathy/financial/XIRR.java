@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
+import static in.satpathy.math.GoalSeekStatus.ReturnStatus.ERROR;
 import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
 
 /**
@@ -35,6 +36,7 @@ import static in.satpathy.math.GoalSeekStatus.ReturnStatus.OK;
  */
 public class XIRR {
     public static final GregorianCalendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, 11, 30);
+    public static final double DAYS_OF_YEAR = 365.0;
     public static final double DEFAULT_GUESS = 0.1;
 
     public double guess;
@@ -126,7 +128,7 @@ public class XIRR {
         data.xmax = Math.min(1000, data.xmax);
         rate0 = guess;
 
-        status = GoalSeek.goalSeekNewton(new XIRRNPV(), null, data, this, rate0);
+        status = GoalSeek.goalSeekNewton(this::residual, null, data, this, rate0);
 
         if (status.getSeekStatus() == OK) {
             result = status.getReturnData();
@@ -136,6 +138,19 @@ public class XIRR {
 
         System.out.println("XIRR Result - " + result);
         return !(Double.isNaN(result)) ? (result - 1.0) : result;
+    }
+
+    public GoalSeekStatus residual(double rate, XIRR userData) {
+        double sum = 0;
+        for (int i = 0; i < userData.dates.length; i++) {
+            double d = userData.dates[i] - userData.dates[0];
+            if (d < 0) {
+                return new GoalSeekStatus(ERROR, null);
+            }
+            sum += userData.values[i] / Math.pow(rate, d / DAYS_OF_YEAR); //pow1p( rate, d / 365.0 ) ;
+        }
+
+        return new GoalSeekStatus(OK, sum);
     }
 
     /**
