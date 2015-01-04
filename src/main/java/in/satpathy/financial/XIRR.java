@@ -39,9 +39,9 @@ public class XIRR {
     public static final double DAYS_OF_YEAR = 365.0;
     public static final double DEFAULT_GUESS = 0.1;
 
-    public double guess;
-    public double[] values;
-    public double[] dates;
+    private final double guess;
+    private final double[] values;
+    private final double[] dates;
 
     public XIRR(double guess, double[] values, double[] dates) {
         Objects.requireNonNull(values);
@@ -65,7 +65,7 @@ public class XIRR {
         this(DEFAULT_GUESS, values, calendarDates);
     }
 
-    public static double[] getExcelDateArray(GregorianCalendar calendarDates[]) {
+    private static double[] getExcelDateArray(GregorianCalendar calendarDates[]) {
         Objects.requireNonNull(calendarDates);
         final double[] dates = new double[calendarDates.length];
         for (int i = 0; i < calendarDates.length; i++) {
@@ -77,7 +77,7 @@ public class XIRR {
     /**
      * Returns the same value as Excel's DataValue method.
      */
-    public static int getExcelDateValue(Calendar date) {
+    private static int getExcelDateValue(Calendar date) {
         return getDaysBetween(EXCEL_DAY_ZERO, date);
     }
 
@@ -91,7 +91,7 @@ public class XIRR {
      * are adjacent, etc.  The order of the dates does not matter, the value returned is always >= 0. If Calendar types
      * of d1 and d2 are different, the result may not be accurate.
      */
-    public static int getDaysBetween(Calendar d1, Calendar d2) {
+    private static int getDaysBetween(Calendar d1, Calendar d2) {
         if (d1.after(d2)) {
             // swap dates so that d1 is start and d2 is end
             Calendar swap = d1;
@@ -116,7 +116,7 @@ public class XIRR {
 	 *  after January 1, 1900.
 	 */
 
-    public double xirr() {
+    public double findRoot() {
         GoalSeekData data;
         GoalSeekStatus status;
         double result;
@@ -140,7 +140,7 @@ public class XIRR {
         return !(Double.isNaN(result)) ? (result - 1.0) : result;
     }
 
-    public GoalSeekStatus residual(double rate, XIRR userData) {
+    private GoalSeekStatus residual(double rate, XIRR userData) {
         double sum = 0;
         for (int i = 0; i < userData.dates.length; i++) {
             double d = userData.dates[i] - userData.dates[0];

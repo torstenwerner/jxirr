@@ -51,10 +51,10 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2000, MARCH, 12),
                 new GregorianCalendar(2000, MAY, 1)
         ]
-        XIRR data = new XIRR(values, dates)
+        XIRR root = new XIRR(values, dates)
 
         when:
-        double xirrValue = data.xirr()
+        double xirrValue = root.findRoot()
 
         then:
         xirrValue.isCloseTo(0.2248376916245216)
@@ -70,10 +70,10 @@ class XIRRTest extends Specification {
         XIRR data = new XIRR(values, dates)
 
         when:
-        double xirrValue = data.xirr()
+        double root = data.findRoot()
 
         then:
-        xirrValue.isCloseTo(0.1, 1e-8)
+        root.isCloseTo(0.1, 1e-8)
     }
 
     def "leap year is not fully correct"() {
@@ -83,10 +83,10 @@ class XIRRTest extends Specification {
                 new GregorianCalendar(2012, JANUARY, 1),
                 new GregorianCalendar(2013, JANUARY, 1)
         ]
-        XIRR data = new XIRR(values, dates)
+        XIRR root = new XIRR(values, dates)
 
         when:
-        double xirrValue = data.xirr()
+        double xirrValue = root.findRoot()
 
         then:
         xirrValue.isCloseTo(0.0997135859, 1e-8)
