@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.function.IntToDoubleFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,7 +43,7 @@ public class Xirr {
     public static final double DAYS_OF_YEAR = 365.0;
     public static final double DEFAULT_GUESS = 0.1;
 
-    private final double guess;
+    private final double initialRate;
     private final double[] values;
     private final int[] dates;
 
@@ -52,7 +53,7 @@ public class Xirr {
         if (values.length != dates.length) {
             throw new RuntimeException("Both arrays must be of same size.");
         }
-        this.guess = guess;
+        this.initialRate = guess + 1.0;
         this.values = values;
         this.dates = dates;
     }
@@ -66,18 +67,12 @@ public class Xirr {
     }
 
     /**
-     * converts an array of Calendar values into excel values
+     * converts an array of Calendar values into int values similar to Excel's DateValue method
      */
     private static int[] getExcelDateArray(Calendar calendarDates[]) {
         Objects.requireNonNull(calendarDates);
-        return Arrays.stream(calendarDates).mapToInt(Xirr::getExcelDateValue).toArray();
-    }
-
-    /**
-     * Returns the same value as Excel's DataValue method.
-     */
-    private static int getExcelDateValue(Calendar date) {
-        return getDaysBetween(EXCEL_DAY_ZERO, date);
+        final ToIntFunction<Calendar> excelDateValue = date -> getDaysBetween(EXCEL_DAY_ZERO, date);
+        return Arrays.stream(calendarDates).mapToInt(excelDateValue).toArray();
     }
 
     /**
@@ -122,7 +117,7 @@ public class Xirr {
         data.xmax = Math.min(1000, data.xmax);
         final GoalSeek goalSeek = new GoalSeek(data);
 
-        final GoalSeekResult result = goalSeek.newton(this::residual, null, guess);
+        final GoalSeekResult result = goalSeek.newton(this::residual, null, initialRate);
         if (result.getStatus() == OK) {
             return result.getValue() - 1.0;
         } else {
@@ -158,7 +153,8 @@ public class Xirr {
         return "XIRRData - n = "
                 + values.length
                 + ", Guess = "
-                + guess + ", Values = "
+                + initialRate
+                + ", Values = "
                 + Arrays.stream(values).mapToObj(Double::toString).collect(Collectors.joining(","))
                 + ", Dates = "
                 + Arrays.stream(dates).mapToObj(Integer::toString).collect(Collectors.joining(","));

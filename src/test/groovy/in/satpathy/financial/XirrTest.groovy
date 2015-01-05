@@ -94,7 +94,7 @@ class XirrTest extends Specification {
 
     def "datevalue"() {
         expect:
-        Xirr.getExcelDateValue(new GregorianCalendar(2015, JANUARY, 2)) == 42006
+        Xirr.getDaysBetween(Xirr.EXCEL_DAY_ZERO, new GregorianCalendar(2015, JANUARY, 2)) == 42006
     }
 
     def "very small epsilon"() {
