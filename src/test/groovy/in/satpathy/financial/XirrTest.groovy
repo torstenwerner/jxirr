@@ -97,6 +97,11 @@ class XirrTest extends Specification {
         Xirr.getDaysBetween(Xirr.EXCEL_DAY_ZERO, new GregorianCalendar(2015, JANUARY, 2)) == 42006
     }
 
+    def "datevalue negative"() {
+        expect:
+        Xirr.getDaysBetween(Xirr.EXCEL_DAY_ZERO, new GregorianCalendar(1815, JANUARY, 5)) == -31040
+    }
+
     def "very small epsilon"() {
         expect:
         Double.MIN_VALUE * 0.5 == 0.0
