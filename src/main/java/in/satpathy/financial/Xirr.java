@@ -48,14 +48,12 @@ public class Xirr {
     private final int[] dates;
 
     public Xirr(double guess, double[] values, int[] dates) {
-        Objects.requireNonNull(values);
-        Objects.requireNonNull(dates);
+        this.values = Objects.requireNonNull(values);
+        this.dates = Objects.requireNonNull(dates);
         if (values.length != dates.length) {
             throw new RuntimeException("Both arrays must be of same size.");
         }
         this.initialRate = guess + 1.0;
-        this.values = values;
-        this.dates = dates;
     }
 
     public Xirr(double guess, double[] values, Calendar calendarDates[]) {
