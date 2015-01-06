@@ -22,6 +22,9 @@ package in.satpathy.financial
 
 import spock.lang.Specification
 
+import java.time.LocalDate
+import java.time.Month
+
 import static java.lang.Math.abs
 import static java.util.Calendar.*
 
@@ -63,9 +66,9 @@ class XirrTest extends Specification {
     def "regular year"() {
         setup:
         final double[] values = [-100, 110]
-        final GregorianCalendar[] dates = [
-                new GregorianCalendar(2011, JANUARY, 1),
-                new GregorianCalendar(2012, JANUARY, 1)
+        final LocalDate[] dates = [
+                LocalDate.of(2011, Month.JANUARY, 1),
+                LocalDate.of(2012, Month.JANUARY, 1)
         ]
         def xirr = new Xirr(values, dates)
 
@@ -95,11 +98,13 @@ class XirrTest extends Specification {
     def "datevalue"() {
         expect:
         Xirr.getDaysBetween(Xirr.EXCEL_DAY_ZERO, new GregorianCalendar(2015, JANUARY, 2)) == 42006
+        Xirr.getDaysBetween(Xirr.EXCEL_DAY_ZERO_, LocalDate.of(2015, Month.JANUARY, 2)) == 42006
     }
 
     def "datevalue negative"() {
         expect:
         Xirr.getDaysBetween(Xirr.EXCEL_DAY_ZERO, new GregorianCalendar(1815, JANUARY, 5)) == -31040
+        Xirr.getDaysBetween(Xirr.EXCEL_DAY_ZERO_, LocalDate.of(1815, Month.JANUARY, 5)) == -31040
     }
 
     def "very small epsilon"() {

@@ -24,6 +24,8 @@ import in.satpathy.math.GoalSeek;
 import in.satpathy.math.GoalSeekData;
 import in.satpathy.math.GoalSeekResult;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -32,6 +34,7 @@ import java.util.function.IntToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static in.satpathy.math.GoalSeekResult.Status.OK;
 
@@ -39,7 +42,8 @@ import static in.satpathy.math.GoalSeekResult.Status.OK;
  * Data structure to hold XIRR data.
  */
 public class Xirr {
-    public static final Calendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, 11, 30);
+    public static final Calendar EXCEL_DAY_ZERO = new GregorianCalendar(1899, Calendar.DECEMBER, 30);
+    public static final LocalDate EXCEL_DAY_ZERO_ = LocalDate.of(1899, Month.DECEMBER, 30);
     public static final double DAYS_OF_YEAR = 365.0;
     public static final double DEFAULT_GUESS = 0.1;
 
@@ -64,12 +68,29 @@ public class Xirr {
         this(DEFAULT_GUESS, values, calendarDates);
     }
 
+    public Xirr(double guess, double[] values, LocalDate calendarDates[]) {
+        this(guess, values, getExcelDateArray(calendarDates));
+    }
+
+    public Xirr(double[] values, LocalDate calendarDates[]) {
+        this(DEFAULT_GUESS, values, calendarDates);
+    }
+
     /**
      * converts an array of Calendar values into int values similar to Excel's DateValue method
      */
     private static int[] getExcelDateArray(Calendar calendarDates[]) {
         Objects.requireNonNull(calendarDates);
         final ToIntFunction<Calendar> excelDateValue = date -> getDaysBetween(EXCEL_DAY_ZERO, date);
+        return Arrays.stream(calendarDates).mapToInt(excelDateValue).toArray();
+    }
+
+    /**
+     * converts an array of Calendar values into int values similar to Excel's DateValue method
+     */
+    private static int[] getExcelDateArray(LocalDate calendarDates[]) {
+        Objects.requireNonNull(calendarDates);
+        final ToIntFunction<LocalDate> excelDateValue = date -> getDaysBetween(EXCEL_DAY_ZERO_, date);
         return Arrays.stream(calendarDates).mapToInt(excelDateValue).toArray();
     }
 
@@ -96,6 +117,17 @@ public class Xirr {
             d1.add(Calendar.YEAR, 1);
         }
         return days;
+    }
+
+    private static int getDaysBetween(LocalDate first, LocalDate second) {
+        if (first.isAfter(second)) {
+            return -getDaysBetween(second, first);
+        }
+        int daysDifference = second.getDayOfYear() - first.getDayOfYear();
+        final int yearDifference = second.getYear() - first.getYear();
+        final int daysOfYears = Stream.iterate(first, date -> date.plusYears(1)).limit(yearDifference)
+                .mapToInt(LocalDate::lengthOfYear).sum();
+        return daysDifference + daysOfYears;
     }
 
     /*
