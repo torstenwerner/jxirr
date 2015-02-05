@@ -16,7 +16,9 @@ provided bug fixes and suggestions.
 The project at https://github.com/torstenwerner/jxirr is a fork of the original code at https://github.com/ept/jxirr.
 It is more compact, contains some tests, is built with gradle, and uses newer Java features.
 
-The original developer is:
-
+[NOTE]
+.The original developer is:
+====
 * Gautam Satpathy
 * http://satpathy.org/2009/11/07/jxirr/[blog article about JXIRR]
+====
